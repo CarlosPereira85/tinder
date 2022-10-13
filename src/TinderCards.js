@@ -1,22 +1,27 @@
 import "./TinderCard.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TinderCard from "react-tinder-card";
+import axios from "./axios";
+import SwipeButtons from "./SwipeButtons";
+import Header from "./Header";
 
 
 
 
 function TinderCards() {
-    const [people, setPeople] = useState([
-        {
-        name: 'ellon Musk',
-        url: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg"
-    }
-        ,
-        {
-        name: 'Newmar',
-        url: "https://upload.wikimedia.org/wikipedia/commons/6/62/Julie_Newmar_-_1965.jpg"
+    const [people, setPeople] = useState([]);
+
+    useEffect (() => {
+        async function fetchData() {
+            const req = await axios.get("/tinder/cards");
+           
+            setPeople(req.data);
         }
-    ]); 
+            fetchData();
+           
+    }, []);
+   
+  
 
     const swiped = (direction, nameToDelete) => {
         console.log("removing: " + nameToDelete);
@@ -31,6 +36,8 @@ function TinderCards() {
 
 
     return (
+        <>
+        <Header />
         <div className="tindercards">
         <div className="tinderCards_cardConteiner">
             {people.map((person) => (
@@ -44,7 +51,7 @@ function TinderCards() {
                 >
                     <div 
                     className="card"
-                    style={{backgroundImage:"url("+person.url+")"}}
+                    style={{backgroundImage:"url("+person.imgUrl+")"}}
                     
                     >
                 
@@ -54,9 +61,14 @@ function TinderCards() {
                     </div>
             </TinderCard>
 
+          
+
             ))}
             </div>
+            <SwipeButtons/>
+            
         </div>
+        </>
         );
 }
 export default TinderCards;
